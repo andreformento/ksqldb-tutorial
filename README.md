@@ -10,10 +10,16 @@ docker-compose up
 docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
 ```
 
-- and create a stream
+- create a stream
 ```sql
 CREATE STREAM riderLocations (profileId VARCHAR, latitude DOUBLE, longitude DOUBLE)
   WITH (kafka_topic='locations', value_format='json', partitions=1);
+```
+
+- show results
+```sql
+SELECT * FROM riderLocations
+  WHERE GEO_DISTANCE(latitude, longitude, 37.4133, -122.1162) <= 5 EMIT CHANGES;
 ```
 
 - _(open a new cli and)_ insert new records
